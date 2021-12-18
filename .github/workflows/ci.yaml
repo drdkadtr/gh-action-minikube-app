@@ -56,10 +56,9 @@ jobs:
     - name: Test service URLs
       run: |
         set -x
-        export IP=$(minikube ip)
-        export PORT=$(kubectl get service example --output='jsonpath="{.spec.ports[0].nodePort}"')
+        export CLUSTER_IP=$(kubectl get service example --output='jsonpath="{.spec.clusterIPs[0]}"')
         echo "------------------opening the service------------------"
-        kubectl run -it --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$IP:$PORT
+        kubectl run -it --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$CLUSTER_IP
         set +x
     - name: Cleanup 
       run: |
