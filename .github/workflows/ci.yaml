@@ -55,9 +55,12 @@ jobs:
         kubectl get all
     - name: Test service URLs
       run: |
-        minikube service example --url
+        ## minikube service example --url
+        IP=$(minikube ip)
+        PORT=$(kubectl get service example --output='jsonpath="{.spec.ports[0].nodePort}"')
         echo "------------------opening the service------------------"
-        curl -sSL $(minikube service example --url)
+        #curl -sSL $(minikube service example --url)
+        kubectl run -it --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$IP:$PORT
     - name: Cleanup 
       run: |
         eval $(minikube docker-env -u)
