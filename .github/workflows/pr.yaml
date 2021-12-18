@@ -1,0 +1,42 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main 
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    name: build example and deploy to minikube
+    steps:
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Try the cluster
+      run: kubectl get pods -A
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        cd app
+        docker build -f ./Dockerfile \
+        --build-arg GITHUB_RUN_ID=$GITHUB_RUN_ID \
+        --build-arg GITHUB_ACTOR=$GITHUB_ACTOR \
+        --build-arg GITHUB_JOB=$GITHUB_JOB \
+        --build-arg GITHUB_ACTOR=$GITHUB_ACTOR \
+        --build-arg GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME \
+        --build-arg GITHUB_EVENT_PATH=$GITHUB_EVENT_PATH \
+        --build-arg GITHUB_REF=$GITHUB_REF \
+        --build-arg GITHUB_REF_NAME=$GITHUB_REF_NAME \
+        --build-arg GITHUB_REF_TYPE=$GITHUB_REF_TYPE \
+        -t local/example .
+        echo -n "verifying images:"
+        docker image ls local/example
+    - name: Deploy to minikube
+      run:
+        kubectl apply -f deploy-to-minikube.yaml
+    - name: Test service URLs
+      run: |
+        minikube service list
+        minikube service example --url
+        echo "------------------opening the service------------------"
+        curl -sSL $(minikube service example --url) 
