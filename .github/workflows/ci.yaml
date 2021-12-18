@@ -1,3 +1,4 @@
+# https://minikube.sigs.k8s.io/docs/tutorials/setup_minikube_in_github_actions/
 name: CI
 
 on:
@@ -14,9 +15,8 @@ jobs:
     name: build example and deploy to minikube
     strategy:
       matrix:
-        # The following strategy matrix is for Minikube
         # https://kubernetes.io/releases/
-        k8s: ["1.21.7", "1.22.4"]
+        k8s: ["1.21.7"]
     steps:
     - uses: actions/checkout@v2
     - name: Setup minikube
@@ -53,7 +53,10 @@ jobs:
         kubectl apply -f deploy-to-minikube.yaml
     - name: Test service URLs
       run: |
-        minikube service list
         minikube service example --url
         echo "------------------opening the service------------------"
-        curl -sSL $(minikube service example --url) 
+        curl -sSL $(minikube service example --url)
+    - name: Cleanup 
+      run: |
+        eval $(minikube docker-env -u)
+        minikube delete
