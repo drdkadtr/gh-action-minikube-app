@@ -56,9 +56,9 @@ jobs:
     - name: Test service URLs
       run: |
         set -x
-        export CLUSTER_IP=$(kubectl get service example --output='jsonpath="{.spec.clusterIPs[0]}"')
+        export CLUSTER_IP=$(kubectl get service example --output='jsonpath={.spec.clusterIPs[0]}')
         echo "------------------opening the service------------------"
-        kubectl run -it --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$CLUSTER_IP
+        kubectl run -i --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$CLUSTER_IP
         set +x
     - name: Cleanup 
       run: |
