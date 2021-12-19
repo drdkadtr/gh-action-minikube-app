@@ -33,6 +33,7 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
+        printenv
         cd app
         docker build -f ./Dockerfile \
         --build-arg GITHUB_RUN_ID=$(echo $GITHUB_RUN_ID) \
