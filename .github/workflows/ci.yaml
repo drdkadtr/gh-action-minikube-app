@@ -35,15 +35,15 @@ jobs:
         eval $(minikube -p minikube docker-env)
         cd app
         docker build -f ./Dockerfile \
-        --build-arg GITHUB_RUN_ID=${{ env.GITHUB_RUN_ID }} \
-        --build-arg GITHUB_ACTOR=${{ env.GITHUB_ACTOR }} \
-        --build-arg GITHUB_JOB=${{ env.GITHUB_JOB }} \
-        --build-arg GITHUB_ACTOR=${{ env.GITHUB_ACTOR }} \
-        --build-arg GITHUB_EVENT_NAME=${{ env.GITHUB_EVENT_NAME }} \
-        --build-arg GITHUB_EVENT_PATH=${{ env.GITHUB_EVENT_PATH }} \
-        --build-arg GITHUB_REF=${{ env.GITHUB_REF }} \
-        --build-arg GITHUB_REF_NAME=${{ env.GITHUB_REF_NAME }} \
-        --build-arg GITHUB_REF_TYPE=${{ env.GITHUB_REF_TYPE }} \
+        --build-arg GITHUB_RUN_ID=$(echo $GITHUB_RUN_ID) \
+        --build-arg GITHUB_ACTOR=$(echo $GITHUB_ACTOR) \
+        --build-arg GITHUB_JOB=$(echo $GITHUB_JOB) \
+        --build-arg GITHUB_ACTOR=$(echo $GITHUB_ACTOR) \
+        --build-arg GITHUB_EVENT_NAME=$(echo $GITHUB_EVENT_NAME) \
+        --build-arg GITHUB_EVENT_PATH=$(echo $GITHUB_EVENT_PATH) \
+        --build-arg GITHUB_REF=$(echo $GITHUB_REF) \
+        --build-arg GITHUB_REF_NAME=$(echo $GITHUB_REF_NAME) \
+        --build-arg GITHUB_REF_TYPE=$(echo $GITHUB_REF_TYPE) \
         -t ${{ env.IMAGE_NAME }} \
         .
         echo -n "verifying images:"
