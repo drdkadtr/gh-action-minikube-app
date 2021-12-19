@@ -1,4 +1,4 @@
-# https://minikube.sigs.k8s.io/docs/tutorials/setup_minikube_in_github_actions/
+# Adapted from: https://minikube.sigs.k8s.io/docs/tutorials/setup_minikube_in_github_actions/
 name: CI
 
 on:
@@ -10,7 +10,7 @@ env:
   IMAGE_NAME: local/example
 
 jobs:
-  lint-test:
+  ci:
     runs-on: ubuntu-latest
     name: build example and deploy to minikube
     strategy:
@@ -33,18 +33,17 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        printenv
         cd app
         docker build -f ./Dockerfile \
-        --build-arg GITHUB_RUN_ID=$(echo $GITHUB_RUN_ID) \
-        --build-arg GITHUB_ACTOR=$(echo $GITHUB_ACTOR) \
-        --build-arg GITHUB_JOB=$(echo $GITHUB_JOB) \
-        --build-arg GITHUB_ACTOR=$(echo $GITHUB_ACTOR) \
-        --build-arg GITHUB_EVENT_NAME=$(echo $GITHUB_EVENT_NAME) \
-        --build-arg GITHUB_EVENT_PATH=$(echo $GITHUB_EVENT_PATH) \
-        --build-arg GITHUB_REF=$(echo $GITHUB_REF) \
-        --build-arg GITHUB_REF_NAME=$(echo $GITHUB_REF_NAME) \
-        --build-arg GITHUB_REF_TYPE=$(echo $GITHUB_REF_TYPE) \
+        --build-arg GITHUB_RUN_ID=$GITHUB_RUN_ID \
+        --build-arg GITHUB_ACTOR=$GITHUB_ACTOR \
+        --build-arg GITHUB_JOB=$GITHUB_JOB \
+        --build-arg GITHUB_ACTOR=$GITHUB_ACTOR \
+        --build-arg GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME \
+        --build-arg GITHUB_EVENT_PATH=$GITHUB_EVENT_PATH \
+        --build-arg GITHUB_REF=$GITHUB_REF \
+        --build-arg GITHUB_REF_NAME=$GITHUB_REF_NAME \
+        --build-arg GITHUB_REF_TYPE=$GITHUB_REF_TYPE \
         -t ${{ env.IMAGE_NAME }} \
         .
         echo -n "verifying images:"
@@ -56,11 +55,8 @@ jobs:
         kubectl get all
     - name: Test service URLs
       run: |
-        set -x
         export CLUSTER_IP=$(kubectl get service example --output='jsonpath={.spec.clusterIPs[0]}')
-        echo "------------------opening the service------------------"
         kubectl run -i --rm --image=curlimages/curl --restart=Never test-curl -- -sSL http://$CLUSTER_IP
-        set +x
     - name: Cleanup 
       run: |
         eval $(minikube docker-env -u)

@@ -18,7 +18,6 @@ spec:
      containers:
      - name: example
        image: "local/example:latest"
-       imagePullPolicy: Never  
        ports:
          - containerPort: 80
 ---
