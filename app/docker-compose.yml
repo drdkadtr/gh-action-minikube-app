@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  todo:
+    image: local/example:dev
+    build:
+      context: .
+    environment: {}
+    ports:
+      - 8080:80
+        
