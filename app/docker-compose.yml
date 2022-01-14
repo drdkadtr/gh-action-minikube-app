@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  todo:
+  app:
     image: local/example:dev
     build:
       context: .
