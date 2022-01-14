@@ -41,9 +41,12 @@ jobs:
           --build-arg GITHUB_ACTOR=$GITHUB_ACTOR \
           --build-arg GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME \
           --build-arg GITHUB_EVENT_PATH=$GITHUB_EVENT_PATH \
+          --build-arg GITHUB_SHA=$GITHUB_SHA \
           --build-arg GITHUB_REF=$GITHUB_REF \
           --build-arg GITHUB_REF_NAME=$GITHUB_REF_NAME \
           --build-arg GITHUB_REF_TYPE=$GITHUB_REF_TYPE \
+          --build-arg GITHUB_HEAD_REF=$GITHUB_HEAD_REF \
+          --build-arg GITHUB_BASE_REF=$GITHUB_BASE_REF \
           -t ${{ env.IMAGE_NAME }} \
           .
           echo -n "verifying images:"
